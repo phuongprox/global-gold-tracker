@@ -1,24 +1,46 @@
 name: gold_app_tracker
-description: "Ứng dụng theo dõi và phân tích giá vàng thế giới phục vụ tích lũy đầu tư."
+description: A Flutter gold price tracking application with real-time prices, news, and portfolio management
+
 publish_to: 'none'
 
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.0.0
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
+
+  # UI & State Management
   provider: ^6.0.5
-  http: ^1.2.0
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
-  fl_chart: ^0.65.0
+  fl_chart: ^0.68.0
+  
+  # Networking & API
+  http: ^1.1.0
+  web_socket_channel: ^2.4.0
+  
+  # Storage & Database
+  shared_preferences: ^2.2.2
+  sqflite: ^2.3.0
+  path_provider: ^2.1.1
+  
+  # Utilities
+  intl: ^0.18.1
+  connectivity_plus: ^5.0.0
+  url_launcher: ^6.2.5
+  
+  # Notifications
+  flutter_local_notifications: ^16.3.0
+  timezone: ^0.9.2
+  
+  # Charts
+  syncfusion_flutter_charts: ^24.1.45
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
 
 flutter:
   uses-material-design: true
-  
-  # Bỏ comment bên dưới nếu bạn có thư mục chứa ảnh/icon
-  # assets:
-  #   - assets/images/
