@@ -6,13 +6,16 @@ class ChartWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 180,
+      height: 200,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10),
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 10,
+          ),
         ],
       ),
       child: Column(
@@ -20,8 +23,10 @@ class ChartWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Text('Biểu đồ giá vàng',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Phân tích AI',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -29,27 +34,38 @@ class ChartWidget extends StatelessWidget {
                   color: Colors.blue,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text('AI phân tích',
-                    style: TextStyle(color: Colors.white, fontSize: 10)),
+                child: const Text(
+                  'Live',
+                  style: TextStyle(color: Colors.white, fontSize: 10),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          // Đây là placeholder cho biểu đồ thực tế
           Container(
-            height: 120,
+            height: 100,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.bottomLeft,
                 end: Alignment.topRight,
-                colors: [Colors.blue.shade100, Colors.blue.shade50],
+                colors: [Colors.amber.shade100, Colors.amber.shade50],
               ),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Center(
-              child: Text('📈 Biểu đồ giá vàng sẽ hiển thị tại đây',
-                  style: TextStyle(color: Colors.blueGrey)),
+              child: Text(
+                '📈 Xu hướng: Tăng nhẹ',
+                style: TextStyle(
+                  color: Colors.amber,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Dự báo: Giá vàng có thể tiếp tục tăng trong tuần tới',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ],
       ),

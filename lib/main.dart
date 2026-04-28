@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/market_provider.dart';
 import 'providers/portfolio_provider.dart';
+import 'providers/news_provider.dart';
 import 'screens/main_screen.dart';
 import 'screens/add_transaction_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // TODO: Sau này thêm notification service khi đã cài đặt package
+  // await NotificationService().init();
+
   runApp(const MyApp());
 }
 
@@ -18,6 +24,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => MarketProvider()),
         ChangeNotifierProvider(create: (_) => PortfolioProvider()),
+        ChangeNotifierProvider(create: (_) => NewsProvider()),
       ],
       child: MaterialApp(
         title: 'Tích Chỉ',
@@ -30,6 +37,7 @@ class MyApp extends StatelessWidget {
             foregroundColor: Colors.white,
             elevation: 0,
           ),
+          useMaterial3: true,
         ),
         home: const MainScreen(),
         routes: {
