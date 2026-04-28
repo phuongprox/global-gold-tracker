@@ -1,7 +1,7 @@
 class Transaction {
   final DateTime date;
-  final double quantity; // lượng vàng (chỉ)
-  final int price; // giá mua vào thời điểm đó
+  final double quantity;
+  final int price;
   final String type; // 'BUY' or 'SELL'
 
   Transaction({
@@ -12,4 +12,22 @@ class Transaction {
   });
 
   int get totalCost => (quantity * price).toInt();
+
+  Map<String, dynamic> toMap() {
+    return {
+      'date': date.toIso8601String(),
+      'quantity': quantity,
+      'price': price,
+      'type': type,
+    };
+  }
+
+  factory Transaction.fromMap(Map<String, dynamic> map) {
+    return Transaction(
+      date: DateTime.parse(map['date']),
+      quantity: map['quantity'],
+      price: map['price'],
+      type: map['type'],
+    );
+  }
 }
