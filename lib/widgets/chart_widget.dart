@@ -55,10 +55,8 @@ class ChartWidget extends StatelessWidget {
             child: const Center(
               child: Text(
                 '📈 Xu hướng: Tăng nhẹ',
-                style: TextStyle(
-                  color: Colors.amber,
-                  fontWeight: FontWeight.bold,
-                ),
+                style:
+                    TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
               ),
             ),
           ),

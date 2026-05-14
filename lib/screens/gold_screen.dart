@@ -10,14 +10,8 @@ class GoldScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text('Giá vàng'),
-        centerTitle: true,
-        elevation: 0,
-      ),
       body: Column(
         children: [
-          // Header table
           Container(
             color: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -46,29 +40,26 @@ class GoldScreen extends StatelessWidget {
           const Divider(height: 0),
           Expanded(
             child: Consumer<MarketProvider>(
-              builder: (context, market, _) {
+              builder: (context, marketProvider, _) {
+                if (marketProvider.isLoading) {
+                  return const Center(
+                      child: CircularProgressIndicator(color: Colors.amber));
+                }
                 return ListView.builder(
-                  itemCount: market.goldPrices.length,
+                  itemCount: marketProvider.goldPrices.length,
                   itemBuilder: (context, index) {
                     return PriceCard(
-                      name: market.goldPrices[index].name,
-                      buyPrice: market.goldPrices[index].buyPrice,
-                      sellPrice: market.goldPrices[index].sellPrice,
-                      isFavorite: market.goldPrices[index].isFavorite,
-                      onFavoriteTap: () => market.toggleFavorite(index),
+                      name: marketProvider.goldPrices[index].name,
+                      buyPrice: marketProvider.goldPrices[index].buyPrice,
+                      sellPrice: marketProvider.goldPrices[index].sellPrice,
+                      isFavorite: marketProvider.goldPrices[index].isFavorite,
+                      isWorldPrice:
+                          marketProvider.goldPrices[index].isWorldPrice,
+                      onFavoriteTap: () => marketProvider.toggleFavorite(index),
                     );
                   },
                 );
               },
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(12),
-            color: Colors.white,
-            child: TextButton(
-              onPressed: () {},
-              child: const Text('+ Thêm giá vàng thủ công',
-                  style: TextStyle(color: Colors.blue)),
             ),
           ),
         ],

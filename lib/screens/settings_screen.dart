@@ -7,14 +7,8 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text('Cài đặt'),
-        centerTitle: true,
-        elevation: 0,
-      ),
       body: ListView(
         children: [
-          // Trạng thái tạo số vàng
           Container(
             margin: const EdgeInsets.all(16),
             padding: const EdgeInsets.all(16),
@@ -38,7 +32,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 const Text('Đăng nhập Google'),
-                const Text('namphuong.844220@gmail.com',
+                const Text('demo@gmail.com',
                     style: TextStyle(color: Colors.blue)),
                 TextButton(
                     onPressed: () {},
@@ -47,8 +41,6 @@ class SettingsScreen extends StatelessWidget {
               ],
             ),
           ),
-
-          // Cấu hình
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             padding: const EdgeInsets.all(16),
@@ -58,18 +50,27 @@ class SettingsScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                _buildSettingRow(
-                    'Kích thước chữ', 'Điều chỉnh tỉ lệ phóng to/thu nhỏ chữ'),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Kích thước chữ',
+                      style: TextStyle(fontWeight: FontWeight.w500)),
+                  subtitle: const Text('Điều chỉnh tỉ lệ phóng to/thu nhỏ chữ'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {},
+                ),
                 const Divider(),
-                _buildSettingRow(
-                    'Thiết lập mã PIN', 'Bảo vệ ứng dụng bằng mã PIN'),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Thiết lập mã PIN',
+                      style: TextStyle(fontWeight: FontWeight.w500)),
+                  subtitle: const Text('Bảo vệ ứng dụng bằng mã PIN'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {},
+                ),
               ],
             ),
           ),
-
           const SizedBox(height: 16),
-
-          // Thông tin & hỗ trợ
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             padding: const EdgeInsets.all(16),
@@ -79,28 +80,40 @@ class SettingsScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                _buildSettingRow('Cam Kết Bảo Mật & Quyền Riêng Tư',
-                    'Tuyệt đối tôn trọng thông tin người dùng!'),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Cam Kết Bảo Mật & Quyền Riêng Tư'),
+                  subtitle:
+                      const Text('Tuyệt đối tôn trọng thông tin người dùng!'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {},
+                ),
                 const Divider(),
-                _buildSettingRow('Điều khoản sử dụng', ''),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Điều khoản sử dụng'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {},
+                ),
                 const Divider(),
-                _buildSettingRow(
-                    'Liên hệ nhà phát triển', 'Hỗ trợ kỹ thuật & hợp tác'),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Liên hệ nhà phát triển'),
+                  subtitle: const Text('Hỗ trợ kỹ thuật & hợp tác'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {},
+                ),
               ],
             ),
           ),
-
           const SizedBox(height: 8),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             padding: const EdgeInsets.all(12),
-            child: Text('Phiên bản ứng dụng: production.env.production 1.0.0',
+            child: Text('Phiên bản ứng dụng: 1.0.0',
                 style: TextStyle(color: Colors.grey[600])),
           ),
-
           const SizedBox(height: 16),
-
-          // Đánh giá và chia sẻ
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             padding: const EdgeInsets.all(16),
@@ -110,43 +123,43 @@ class SettingsScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                _buildActionRow(Icons.link, 'Lời tắt'),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.link, color: Colors.blue),
+                  title: const Text('Lời tắt'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {},
+                ),
                 const Divider(),
-                _buildActionRow(Icons.share, 'Chia sẻ'),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.share, color: Colors.blue),
+                  title: const Text('Chia sẻ'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {},
+                ),
                 const Divider(),
-                _buildActionRow(Icons.qr_code, 'Zalo Mini App'),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.qr_code, color: Colors.blue),
+                  title: const Text('Zalo Mini App'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {},
+                ),
                 const Divider(),
-                _buildActionRow(Icons.error_outline, 'Báo lỗi - Góp ý'),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.error_outline, color: Colors.blue),
+                  title: const Text('Báo lỗi - Góp ý'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {},
+                ),
               ],
             ),
           ),
-
           const SizedBox(height: 80),
         ],
       ),
-    );
-  }
-
-  Widget _buildSettingRow(String title, String subtitle) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-      subtitle: subtitle.isNotEmpty
-          ? Text(subtitle,
-              style: const TextStyle(fontSize: 12, color: Colors.grey))
-          : null,
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {},
-    );
-  }
-
-  Widget _buildActionRow(IconData icon, String title) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: Icon(icon, color: Colors.blue),
-      title: Text(title),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {},
     );
   }
 }

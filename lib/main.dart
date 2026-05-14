@@ -6,12 +6,7 @@ import 'providers/news_provider.dart';
 import 'screens/main_screen.dart';
 import 'screens/add_transaction_screen.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // TODO: Sau này thêm notification service khi đã cài đặt package
-  // await NotificationService().init();
-
+void main() {
   runApp(const MyApp());
 }
 
@@ -36,6 +31,7 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.amber,
             foregroundColor: Colors.white,
             elevation: 0,
+            centerTitle: true,
           ),
           useMaterial3: true,
         ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/news_provider.dart';
-import '../models/news.dart';
+import '../widgets/news_card.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class _NewsScreenState extends State<NewsScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -69,7 +70,6 @@ class _NewsScreenState extends State<NewsScreen>
                   Tab(text: '💰 Giá vàng'),
                   Tab(text: '📊 Kinh tế'),
                   Tab(text: '🌍 Thế giới'),
-                  Tab(text: '📈 Phân tích'),
                 ],
               )
             : null,
@@ -103,7 +103,7 @@ class _NewsScreenState extends State<NewsScreen>
       ),
       body: Consumer<NewsProvider>(
         builder: (context, provider, _) {
-          if (provider.isLoading) {
+          if (provider.isLoading && provider.allNews.isEmpty) {
             return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -151,7 +151,6 @@ class _NewsScreenState extends State<NewsScreen>
               _buildNewsList(provider.goldNews),
               _buildNewsList(provider.economyNews),
               _buildNewsList(provider.worldNews),
-              _buildNewsList(provider.analysisNews),
             ],
           );
         },
@@ -159,32 +158,22 @@ class _NewsScreenState extends State<NewsScreen>
     );
   }
 
-  Widget _buildNewsList(List<NewsModel> news) {
+  Widget _buildNewsList(List<Map<String, dynamic>> news) {
     if (news.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.newspaper,
-              size: 80,
-              color: Colors.grey[300],
-            ),
+            Icon(Icons.newspaper, size: 80, color: Colors.grey[300]),
             const SizedBox(height: 16),
             Text(
               'Chưa có tin tức mới',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
             const SizedBox(height: 8),
             Text(
               'Kéo xuống để làm mới',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[500],
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey[500]),
             ),
           ],
         ),
@@ -201,129 +190,16 @@ class _NewsScreenState extends State<NewsScreen>
         itemCount: news.length,
         itemBuilder: (context, index) {
           final item = news[index];
-          return _buildNewsCard(item);
+          return NewsCard(
+            news: item,
+            onTap: () => _openNewsDetail(item),
+          );
         },
       ),
     );
   }
 
-  Widget _buildNewsCard(NewsModel news) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: InkWell(
-        onTap: () {
-          _showNewsDetail(news);
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // News Image
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  color: Colors.grey[200],
-                  child: Image.network(
-                    news.imageUrl,
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(
-                        Icons.newspaper,
-                        size: 40,
-                        color: Colors.grey[400],
-                      );
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              // News Content
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      news.title,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        height: 1.3,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      news.summary,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                        height: 1.2,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color:
-                                _getImpactColor(news.impact).withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            _getImpactText(news.impact),
-                            style: TextStyle(
-                              fontSize: 9,
-                              color: _getImpactColor(news.impact),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          news.source,
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          _getTimeAgo(news.publishedAt),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showNewsDetail(NewsModel news) {
+  void _openNewsDetail(Map<String, dynamic> news) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -358,33 +234,40 @@ class _NewsScreenState extends State<NewsScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Image
+                      // Hình ảnh
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Container(
                           height: 200,
                           width: double.infinity,
                           color: Colors.grey[200],
-                          child: Image.network(
-                            news.imageUrl,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(
-                                Icons.image_not_supported,
-                                size: 50,
-                                color: Colors.grey[400],
-                              );
-                            },
-                          ),
+                          child: news['imageUrl'] != null &&
+                                  news['imageUrl'].isNotEmpty
+                              ? Image.network(
+                                  news['imageUrl'],
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Icon(
+                                      Icons.image_not_supported,
+                                      size: 50,
+                                      color: Colors.grey[400],
+                                    );
+                                  },
+                                )
+                              : Icon(
+                                  Icons.newspaper,
+                                  size: 50,
+                                  color: Colors.grey[400],
+                                ),
                         ),
                       ),
                       const SizedBox(height: 16),
-                      // Source and time
+                      // Source và thời gian
                       Row(
                         children: [
                           Text(
-                            news.source,
+                            news['source'] ?? 'Unknown',
                             style: const TextStyle(
                               color: Colors.amber,
                               fontWeight: FontWeight.w600,
@@ -392,24 +275,10 @@ class _NewsScreenState extends State<NewsScreen>
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            _getTimeAgo(news.publishedAt),
+                            _formatDate(news['pubDate']),
                             style: TextStyle(
                               color: Colors.grey[500],
                               fontSize: 12,
-                            ),
-                          ),
-                          const Spacer(),
-                          Icon(
-                            Icons.remove_red_eye,
-                            size: 16,
-                            color: Colors.grey[400],
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${news.readCount} lượt xem',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[500],
                             ),
                           ),
                         ],
@@ -417,7 +286,7 @@ class _NewsScreenState extends State<NewsScreen>
                       const SizedBox(height: 16),
                       // Title
                       Text(
-                        news.title,
+                        news['title'] ?? '',
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -425,9 +294,9 @@ class _NewsScreenState extends State<NewsScreen>
                         ),
                       ),
                       const SizedBox(height: 16),
-                      // Summary
+                      // Content
                       Text(
-                        news.summary,
+                        news['content'] ?? news['description'] ?? '',
                         style: TextStyle(
                           fontSize: 15,
                           color: Colors.grey[800],
@@ -435,54 +304,21 @@ class _NewsScreenState extends State<NewsScreen>
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // Full content
-                      Text(
-                        'Nội dung chi tiết:\n\n'
-                        'Theo nguồn tin từ ${news.source}, ${news.title.toLowerCase()}.\n\n'
-                        'Các chuyên gia nhận định thông tin này có thể ảnh hưởng đến giá vàng '
-                        'trong thời gian tới. Nhà đầu tư nên theo dõi sát sao diễn biến '
-                        'thị trường để có quyết định phù hợp.\n\n'
-                        'Xem chi tiết tại: ${news.link.isNotEmpty ? news.link : news.source}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[700],
-                          height: 1.6,
+                      // Nút đọc thêm
+                      if (news['link'] != null && news['link'].isNotEmpty)
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () => _launchURL(news['link']),
+                            icon: const Icon(Icons.open_in_browser),
+                            label: const Text('Đọc bài viết gốc'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.amber,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                          ),
                         ),
-                      ),
                       const SizedBox(height: 20),
-                      // Action buttons
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () {
-                                // TODO: Share news
-                              },
-                              icon: const Icon(Icons.share),
-                              label: const Text('Chia sẻ'),
-                              style: OutlinedButton.styleFrom(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(Icons.close),
-                              label: const Text('Đóng'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.amber,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),
@@ -504,44 +340,18 @@ class _NewsScreenState extends State<NewsScreen>
     _searchController.clear();
   }
 
-  String _getImpactText(int impact) {
-    switch (impact) {
-      case 1:
-        return '📉 Tác động thấp';
-      case 2:
-        return '📉 Tác động vừa';
-      case 3:
-        return '📊 Tác động cao';
-      case 4:
-        return '⚠️ Tác động rất cao';
-      case 5:
-        return '🔥 Tác động đặc biệt';
-      default:
-        return '📊 Tác động trung bình';
-    }
-  }
-
-  Color _getImpactColor(int impact) {
-    if (impact >= 4) return Colors.red;
-    if (impact >= 3) return Colors.orange;
-    return Colors.grey;
-  }
-
-  String _getTimeAgo(DateTime dateTime) {
-    final difference = DateTime.now().difference(dateTime);
-
-    if (difference.inDays > 30) {
-      return '${(difference.inDays / 30).floor()} tháng trước';
-    } else if (difference.inDays > 7) {
-      return '${(difference.inDays / 7).floor()} tuần trước';
-    } else if (difference.inDays > 0) {
-      return '${difference.inDays} ngày trước';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours} giờ trước';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} phút trước';
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      return 'Vừa xong';
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Không thể mở link')),
+      );
     }
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')} - ${date.day}/${date.month}/${date.year}';
   }
 }

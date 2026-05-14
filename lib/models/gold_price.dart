@@ -3,7 +3,7 @@ class GoldPrice {
   final int buyPrice;
   final int sellPrice;
   final bool isFavorite;
-  final bool isWorldPrice; // Thêm flag cho giá thế giới
+  final bool isWorldPrice;
 
   GoldPrice({
     required this.name,

@@ -5,6 +5,13 @@ import '../providers/market_provider.dart';
 class WorldGoldPriceCard extends StatelessWidget {
   const WorldGoldPriceCard({Key? key}) : super(key: key);
 
+  String formatPrice(int price) {
+    return price.toString().replaceAllMapped(
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]}.',
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<MarketProvider>(
@@ -50,9 +57,8 @@ class WorldGoldPriceCard extends StatelessWidget {
 
         final priceUSD = worldPrice['price_usd'] ?? 0;
         final priceVND = worldPrice['price_vnd'] ?? 0;
-        final change = worldPrice['change'] ?? 0;
         final changePercent = worldPrice['change_percent'] ?? 0;
-        final isUp = change >= 0;
+        final isUp = changePercent >= 0;
 
         return Container(
           padding: const EdgeInsets.all(16),
@@ -63,13 +69,6 @@ class WorldGoldPriceCard extends StatelessWidget {
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.amber.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
           child: Column(
             children: [
@@ -79,10 +78,9 @@ class WorldGoldPriceCard extends StatelessWidget {
                   const Text(
                     '💰 Giá vàng thế giới',
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
                   ),
                   Container(
                     padding:
@@ -94,9 +92,7 @@ class WorldGoldPriceCard extends StatelessWidget {
                     child: Text(
                       'GoldAPI.io',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 10,
-                      ),
+                          color: Colors.white.withOpacity(0.8), fontSize: 10),
                     ),
                   ),
                 ],
@@ -108,53 +104,36 @@ class WorldGoldPriceCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'XAU/USD',
-                        style: TextStyle(color: Colors.white70, fontSize: 12),
-                      ),
+                      const Text('XAU/USD',
+                          style:
+                              TextStyle(color: Colors.white70, fontSize: 12)),
                       const SizedBox(height: 4),
                       Text(
                         '\$${priceUSD.toStringAsFixed(2)}',
                         style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: isUp ? Colors.green : Colors.red,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              isUp ? Icons.arrow_upward : Icons.arrow_downward,
-                              size: 14,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '${changePercent.toStringAsFixed(2)}%',
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${isUp ? '+' : ''}\$${change.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                            color: Colors.white70, fontSize: 12),
-                      ),
-                    ],
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isUp ? Colors.green : Colors.red,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(isUp ? Icons.arrow_upward : Icons.arrow_downward,
+                            size: 14, color: Colors.white),
+                        const SizedBox(width: 4),
+                        Text(
+                            '${isUp ? '+' : ''}${changePercent.toStringAsFixed(2)}%',
+                            style: const TextStyle(color: Colors.white)),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -164,44 +143,21 @@ class WorldGoldPriceCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Quy đổi sang VND:',
-                    style: TextStyle(color: Colors.white70, fontSize: 12),
-                  ),
+                  const Text('Quy đổi sang VND:',
+                      style: TextStyle(color: Colors.white70, fontSize: 12)),
                   Text(
-                    _formatVND(priceVND),
+                    '${formatPrice(priceVND)} đ/lượng',
                     style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              if (provider.lastUpdated != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    'Cập nhật lúc: ${_formatTime(provider.lastUpdated!)}',
-                    style: TextStyle(
-                        color: Colors.white.withOpacity(0.5), fontSize: 10),
-                  ),
-                ),
             ],
           ),
         );
       },
     );
-  }
-
-  String _formatVND(int price) {
-    return price.toString().replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match m) => '${m[1]}.',
-        );
-  }
-
-  String _formatTime(DateTime time) {
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:${time.second.toString().padLeft(2, '0')}';
   }
 }
